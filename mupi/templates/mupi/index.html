@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <title>Mupi</title>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row mb-3">
+      <div class="col">
+        <h1 class="text-center">Mupi</h1>
+      </div>
+    </div>
+      <div class="row">
+  <div class="col-4">
+    <form method="GET">
+      <div class="mb-3">
+        <label for="state" class="form-label">Estado:</label>
+        <select name="state" id="state" class="form-select">
+          <option value="">Todos</option>
+          {% for state in estados %}
+          <option value="{{ state.sigla }}" {% if selected_state == state.sigla %}selected{% endif %}>{{ state.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    <div class="mb-3">
+        <label for="registros_por_pagina" class="form-label">Quantidade de cidades:</label>
+        <input type="number" name="registros_por_pagina" id="num_cidades" class="form-control" value="25">
+      </div>
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="col">
+    <table class="table table-striped table-bordered">
+      <caption>Total de cidades: {{ num_cidades }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Estado</th>
+          <th scope="col">Cidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for city in page_obj %}
+        <tr>
+          <td>{{ city.microrregiao.mesorregiao.UF.nome }}</td>
+          <td>{{ city.nome }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">Nenhuma cidade encontrada.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+      <div>
+        {% if page_obj.has_previous %}
+        {% if selected_state %}
+        <a href="?state={{ selected_state }}&page=1" class="btn btn-sm btn-outline-secondary">&laquo; primeira</a>
+        <a href="?state={{ selected_state }}&page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-outline-secondary">anterior</a>
+        {% else %}
+        <a href="?page=1" class="btn btn-sm btn-outline-secondary">&laquo; primeira</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-sm btn-outline-secondary">anterior</a>
+        {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="text-center">
+        <span class="text-muted">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+      </div>
+
+      <div>
+        {% if page_obj.has_next %}
+        {% if selected_state %}
+        <a href="?state={{ selected_state }}&page={{ page_obj.next_page_number }}" class="btn btn-sm btn-outline-secondary">próxima</a>
+        <a href="?state={{ selected_state }}&page={{ page_obj.paginator.num_pages }}" class="btn btn-sm btn-outline-secondary">última &raquo;</a>
+        {% else %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-sm btn-outline-secondary">próxima</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-sm btn-outline-secondary">última &raquo;</a>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm"></script>
+</html>
